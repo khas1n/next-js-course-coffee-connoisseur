@@ -1,4 +1,4 @@
-@import "./variables";
+@import "../../scss/variables";
 /** Mobile first development **/
 .container {
   margin-bottom: 14rem;
@@ -17,6 +17,7 @@
   z-index: 1;
 }
 .cardLayout {
+  margin-top: 5rem;
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   column-gap: 1.5rem;
