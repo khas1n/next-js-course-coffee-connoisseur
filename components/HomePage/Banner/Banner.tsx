@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./banner.module.scss";
+import styles from "./Banner.module.scss";
 
 interface BannerProps {
   handleOnClick: () => void;

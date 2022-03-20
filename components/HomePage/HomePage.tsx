@@ -1,16 +1,17 @@
-import type { NextPage } from "next";
 import Head from "next/head";
-import Card from "../Card/Card";
+import Card from "../Card";
 import styles from "../HomePage/HomePage.module.scss";
-import Banner from "./Banner/Banner";
-import coffeeStoreData from "../../data/coffee-stores.json";
+import Banner from "./Banner";
 import { CoffeeStore } from "../../models/coffee-store";
 
-const Home: NextPage = () => {
+interface HomePageProps {
+  coffeeStoreData: CoffeeStore[];
+}
+
+const HomePage: React.FC<HomePageProps> = ({ coffeeStoreData }) => {
   const handleOnBannerBtnClick = () => {
     console.log("Hi banner Button");
   };
-  const coffeeStores: CoffeeStore[] = coffeeStoreData;
   return (
     <div className={styles.container}>
       <Head>
@@ -20,17 +21,23 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <Banner handleOnClick={handleOnBannerBtnClick} buttonText="View stores nearby" />
-        <div className={styles.cardLayout}>
-          {coffeeStores.map((coffeeStore) => (
-            <Card
-              name={coffeeStore.name}
-              href={`/coffee-store/${coffeeStore.id}`}
-              imgUrl={coffeeStore.imgUrl}
-              className={styles.card}
-              key={coffeeStore.id}
-            />
-          ))}
-        </div>
+
+        {coffeeStoreData.length && (
+          <>
+            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <div className={styles.cardLayout}>
+              {coffeeStoreData.map((coffeeStore) => (
+                <Card
+                  name={coffeeStore.name}
+                  href={`/coffee-store/${coffeeStore.id}`}
+                  imgUrl={coffeeStore.imgUrl}
+                  className={styles.card}
+                  key={coffeeStore.id}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </main>
 
       <footer className={styles.footer}></footer>
@@ -38,4 +45,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default HomePage;
