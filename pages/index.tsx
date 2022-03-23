@@ -1,10 +1,11 @@
 import type { GetStaticProps, NextPage } from "next";
 import HomePage from "../components/HomePage";
+import { fetchCoffeeStores } from "../lib/coffee-stores";
 import { CoffeeStore } from "../models/coffee-store";
-import coffeeStoreData from "../data/coffee-stores.json";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const coffeeStores = coffeeStoreData;
+  const coffeeStores = await fetchCoffeeStores();
+
   return {
     props: {
       coffeeStores,
