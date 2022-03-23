@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CoffeeStore } from "../models/coffee-store";
+
+import { createApi } from "unsplash-js";
+
+// on your node server
+const unsplashApi = createApi({
+  accessKey: process.env.UNSPLASH_ACCESS_KEY!,
+  //...other fetch options
+});
 
 const getUrlForCoffeeStores = (latLong: string, query: string, limit: string) => {
   return `
@@ -6,10 +15,21 @@ const getUrlForCoffeeStores = (latLong: string, query: string, limit: string) =>
   `;
 };
 
+const getListOfCoffeeStorePhotos = async () => {
+  const photos = await unsplashApi.search.getPhotos({
+    query: "coffee shop",
+    perPage: 40,
+    orientation: "landscape",
+  });
+  const unsplashResults = photos.response?.results || [];
+  return unsplashResults.map((result) => result.urls["small"]);
+};
+
 export const fetchCoffeeStores = async () => {
+  const photos = await getListOfCoffeeStorePhotos();
+
   const response = await fetch(getUrlForCoffeeStores("-6.596211761550628,106.80527934402286", "coffee", "6"), {
     headers: new Headers({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       Authorization: process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY!,
     }),
   });
@@ -17,13 +37,13 @@ export const fetchCoffeeStores = async () => {
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?.results?.map((venue: any) => {
+    data?.results?.map((venue: any, idx: number) => {
       const coffeeStore: CoffeeStore = {
         address: venue.location.address,
         name: venue.name,
         id: venue.fsq_id,
-        imgUrl: "",
-        neighbourhood: venue.location.neighborhood || "",
+        imgUrl: photos[idx],
+        neighbourhood: venue.location.neighborhood || venue.location.crossStreet || "",
         websiteUrl: "",
       };
       return coffeeStore;
