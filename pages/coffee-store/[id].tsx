@@ -20,15 +20,9 @@ export const getStaticProps: GetStaticProps<CoffeeStoreProps, Params> = async (c
   const coffeeStoresData = await fetchCoffeeStores();
 
   const coffeeStore = coffeeStoresData.find((coffeStore: CoffeeStoreModel) => coffeStore.id.toString() === id);
-
-  if (!coffeeStore) {
-    return {
-      notFound: true,
-    };
-  }
   return {
     props: {
-      coffeeStore: coffeeStore,
+      coffeeStore: coffeeStore ?? {},
     }, // will be passed to the page component as props
   };
 };

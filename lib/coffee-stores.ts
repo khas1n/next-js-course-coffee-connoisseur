@@ -5,11 +5,11 @@ import { createApi } from "unsplash-js";
 
 // on your node server
 const unsplashApi = createApi({
-  accessKey: process.env.UNSPLASH_ACCESS_KEY!,
+  accessKey: process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY!,
   //...other fetch options
 });
 
-const getUrlForCoffeeStores = (latLong: string, query: string, limit: string) => {
+const getUrlForCoffeeStores = (latLong: string, query: string, limit: number) => {
   return `
     https://api.foursquare.com/v3/places/nearby?ll=${latLong}&query=${query}&limit=${limit}
   `;
@@ -25,10 +25,10 @@ const getListOfCoffeeStorePhotos = async () => {
   return unsplashResults.map((result) => result.urls["small"]);
 };
 
-export const fetchCoffeeStores = async () => {
+export const fetchCoffeeStores = async (latLong = "-6.596211761550628,106.80527934402286", limit = 6) => {
   const photos = await getListOfCoffeeStorePhotos();
 
-  const response = await fetch(getUrlForCoffeeStores("-6.596211761550628,106.80527934402286", "coffee", "6"), {
+  const response = await fetch(getUrlForCoffeeStores(latLong, "coffee", limit), {
     headers: new Headers({
       Authorization: process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY!,
     }),

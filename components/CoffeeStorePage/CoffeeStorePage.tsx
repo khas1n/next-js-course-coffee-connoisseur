@@ -6,6 +6,9 @@ import cls from "classnames";
 
 import { CoffeeStore } from "../../models/coffee-store";
 import styles from "./CoffeeStorePage.module.scss";
+import { useContext, useEffect, useState } from "react";
+import { isEmpty } from "../../utils";
+import { StoreContext } from "../../store/store-context";
 
 interface CoffeeStoreProps {
   coffeeStoreDetailData: CoffeeStore;
@@ -13,10 +16,31 @@ interface CoffeeStoreProps {
 
 const CoffeeStorePage: React.FC<CoffeeStoreProps> = ({ coffeeStoreDetailData }) => {
   const router = useRouter();
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
+  const id = router.query.id as string;
+
+  const [coffeeStore, setCoffeeStore] = useState<CoffeeStore>(coffeeStoreDetailData || {});
+
+  useEffect(() => {
+    if (isEmpty(coffeeStoreDetailData)) {
+      if (coffeeStores.length > 0) {
+        const foundCoffeeStore = coffeeStores.find((coffeStore: CoffeeStore) => coffeStore.id.toString() === id);
+        if (foundCoffeeStore) {
+          setCoffeeStore(foundCoffeeStore);
+        }
+      }
+    } else {
+      setCoffeeStore(coffeeStoreDetailData);
+    }
+  }, [id, coffeeStoreDetailData, coffeeStores]);
+
   if (router.isFallback) {
     return <div>Loading Data</div>;
   }
-  const { address, name, neighbourhood, imgUrl } = coffeeStoreDetailData;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const { address, name, neighbourhood, imgUrl } = coffeeStore!;
   const handleUpvoteButton = () => {
     console.log("UPvote");
   };
