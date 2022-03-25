@@ -5,7 +5,6 @@ import Banner from "./Banner";
 import { CoffeeStore } from "../../models/coffee-store";
 import useTrackLocation from "../../hooks/use-track-location";
 import { useContext, useEffect, useState } from "react";
-import { fetchCoffeeStores } from "../../lib/coffee-stores";
 import { ACTION_TYPES, StoreContext } from "../../store/store-context";
 
 interface HomePageProps {
@@ -26,8 +25,8 @@ const HomePage: React.FC<HomePageProps> = ({ coffeeStoreData }) => {
     if (latLong) {
       const fetchData = async () => {
         try {
-          const fetchedCoffeeStores = await fetchCoffeeStores(latLong);
-          console.log("fetchedCoffeeStores: ", fetchedCoffeeStores);
+          const response = await fetch(`/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=30`);
+          const fetchedCoffeeStores = await response.json();
           dispatch({ type: ACTION_TYPES.SET_COFFEE_STORES, payload: fetchedCoffeeStores });
         } catch (error) {
           console.log(error);

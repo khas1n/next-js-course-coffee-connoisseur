@@ -25,7 +25,7 @@ const getListOfCoffeeStorePhotos = async () => {
   return unsplashResults.map((result) => result.urls["small"]);
 };
 
-export const fetchCoffeeStores = async (latLong = "-6.596211761550628,106.80527934402286", limit = 6) => {
+export const fetchCoffeeStores = async (latLong = "-6.596211761550628,106.80527934402286", limit = 6): Promise<CoffeeStore[]> => {
   const photos = await getListOfCoffeeStorePhotos();
 
   const response = await fetch(getUrlForCoffeeStores(latLong, "coffee", limit), {

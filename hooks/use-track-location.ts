@@ -16,6 +16,7 @@ const useTrackLocation = () => {
     // setLatLong(`${latitude},${longitude}`);
     dispatch({ type: ACTION_TYPES.SET_LAT_LONG, payload: `${latitude},${longitude}` });
     setIsFindingLocation(false);
+    setLocationErrorMsg("");
   };
 
   const error = () => {
