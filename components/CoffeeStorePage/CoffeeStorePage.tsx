@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import cls from "classnames";
 
-import { CoffeeStore } from "../../models/coffee-store";
+import { CoffeeStore, CoffeeStoreFields } from "../../models/coffee-store";
 import styles from "./CoffeeStorePage.module.scss";
 import { useContext, useEffect, useState } from "react";
 import { isEmpty } from "../../utils";
@@ -23,16 +23,42 @@ const CoffeeStorePage: React.FC<CoffeeStoreProps> = ({ coffeeStoreDetailData }) 
 
   const [coffeeStore, setCoffeeStore] = useState<CoffeeStore>(coffeeStoreDetailData || {});
 
+  const handleCreateCoffeeStore: (coffeeStoreData: CoffeeStore) => void = async (coffeeStoreData) => {
+    try {
+      const body: CoffeeStoreFields = {
+        id: coffeeStoreData.id.toString(),
+        name: coffeeStoreData.name,
+        imgUrl: coffeeStoreData.imgUrl,
+        address: coffeeStoreData.address || "",
+        neighbourhood: coffeeStoreData.neighbourhood || "",
+        voting: 0,
+      };
+      const response = await fetch("/api/createCoffeeStore", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const dbCoffeeStore = response.json();
+      console.log("dbCoffeeStore: ", dbCoffeeStore);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
   useEffect(() => {
     if (isEmpty(coffeeStoreDetailData)) {
       if (coffeeStores.length > 0) {
         const foundCoffeeStore = coffeeStores.find((coffeStore: CoffeeStore) => coffeStore.id.toString() === id);
         if (foundCoffeeStore) {
           setCoffeeStore(foundCoffeeStore);
+          handleCreateCoffeeStore(foundCoffeeStore);
         }
       }
     } else {
       setCoffeeStore(coffeeStoreDetailData);
+      handleCreateCoffeeStore(coffeeStoreDetailData);
     }
   }, [id, coffeeStoreDetailData, coffeeStores]);
 

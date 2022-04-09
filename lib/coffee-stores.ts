@@ -46,6 +46,7 @@ export const fetchCoffeeStores = async (latLong = "-6.596211761550628,106.805279
         neighbourhood: venue.location.neighborhood || venue.location.crossStreet || "",
         websiteUrl: "",
       };
+      coffeeStore.neighbourhood = Array.isArray(coffeeStore.neighbourhood) ? coffeeStore.neighbourhood[0] : coffeeStore.neighbourhood;
       return coffeeStore;
     }) || []
   );

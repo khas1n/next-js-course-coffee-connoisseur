@@ -13,7 +13,7 @@ interface CoffeeStoreProps {
   coffeeStore: CoffeeStoreModel;
 }
 
-export const getStaticProps: GetStaticProps<CoffeeStoreProps, Params> = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const params = context.params!; // ! is a non-null assertion
   const id = params.id;
