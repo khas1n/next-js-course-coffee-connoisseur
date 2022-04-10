@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { CoffeeStoreFields } from "../../models/coffee-store";
-import { table, getMinifiedRecords } from "../../lib/airtable";
-import Airtable, { FieldSet } from "airtable";
+import { table, getMinifiedRecords, findRecordsByFilter } from "../../lib/airtable";
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: CoffeeStoreFields;
@@ -12,15 +11,10 @@ const createCoffeeStore = async (req: ExtendedNextApiRequest, res: NextApiRespon
     try {
       const { id, address, name, neighbourhood, imgUrl, voting } = req.body;
       if (id) {
-        const findCoffeeStoreRecords: Airtable.Records<FieldSet> = await table
-          .select({
-            filterByFormula: `id="${id}"`,
-          })
-          .firstPage();
+        const recordsById = await findRecordsByFilter(id);
 
-        if (findCoffeeStoreRecords.length > 0) {
-          const records = getMinifiedRecords(findCoffeeStoreRecords);
-          res.json(records);
+        if (recordsById.length > 0) {
+          res.json(recordsById);
         } else {
           if (name) {
             const createRecords = await table.create([

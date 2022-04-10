@@ -5,6 +5,7 @@ export interface CoffeeStore {
   websiteUrl: string;
   address: string;
   neighbourhood: string;
+  voting: number;
 }
 
 export interface CoffeeStoreFields {
@@ -14,4 +15,5 @@ export interface CoffeeStoreFields {
   neighbourhood: string;
   voting: number;
   imgUrl: string;
+  recordId?: string;
 }
